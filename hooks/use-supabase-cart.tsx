@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import { useUser } from "@clerk/nextjs";
 import type { Database } from "@/lib/supabase";
 
 type CartItem = Database["public"]["Tables"]["cart_items"]["Row"] & {
@@ -15,8 +14,11 @@ export function useSupabaseCart() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user, isSignedIn } = useUser();
   const supabase = createSupabaseBrowserClient();
+
+  // Mock user state since we removed authentication
+  const user = null;
+  const isSignedIn = false;
 
   const fetchCartItems = useCallback(async () => {
     if (!isSignedIn || !user) {

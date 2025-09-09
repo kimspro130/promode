@@ -1,19 +1,10 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/admin(.*)",
-  "/account(.*)",
-  "/orders(.*)",
-]);
-
-export default clerkMiddleware((auth, req) => {
-  if (isProtectedRoute(req)) {
-    const { userId } = auth();
-    if (!userId) {
-      return Response.redirect(new URL("/sign-in", req.url));
-    }
-  }
-});
+// Simple middleware without authentication
+export default function middleware(req: NextRequest) {
+  // Allow all routes since we removed authentication
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],

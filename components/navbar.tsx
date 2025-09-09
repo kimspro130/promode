@@ -15,16 +15,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useWishlist } from "@/hooks/use-wishlist";
-import { useUser, useClerk } from "@clerk/nextjs";
-
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const { items } = useCart();
   const { items: wishlistItems } = useWishlist();
-  const { user, isSignedIn } = useUser();
-  const { signOut, openSignIn } = useClerk();
   const router = useRouter();
+
+  // Mock user state since we're removing Clerk
+  const user = null;
+  const isSignedIn = false;
 
   useEffect(() => {
     setIsClient(true);
@@ -113,54 +113,16 @@ export default function Navbar() {
               </Button>
             </Link>
 
-            {isSignedIn ? (
-              <div className="flex items-center space-x-2">
-                {user?.emailAddresses?.[0]?.emailAddress?.includes("admin") && (
-                  <Link href="/admin">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white hover:text-green-400 hover:bg-gray-800"
-                      title="Admin Dashboard"
-                    >
-                      <Shield className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                )}
-                <Link href="/account">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-white hover:text-green-400 hover:bg-gray-800"
-                    title={
-                      user?.fullName ||
-                      user?.emailAddresses?.[0]?.emailAddress ||
-                      "Account"
-                    }
-                  >
-                    <User className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-white hover:text-red-400 hover:bg-gray-800"
-                  onClick={() => signOut()}
-                  title="Sign Out"
-                >
-                  <LogOut className="h-5 w-5" />
-                </Button>
-              </div>
-            ) : (
+            <Link href="/login">
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-white hover:text-green-400 hover:bg-gray-800"
-                onClick={() => openSignIn()}
+                title="Login"
               >
                 <User className="h-5 w-5" />
               </Button>
-            )}
+            </Link>
           </div>
 
           {/* Mobile menu button */}

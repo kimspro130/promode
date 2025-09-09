@@ -5,8 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useUser } from "@clerk/nextjs";
-import { useSupabaseCart } from "@/hooks/use-supabase-cart";
 import { useCart } from "@/hooks/use-cart";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -42,9 +40,11 @@ interface EnhancedCheckoutFormProps {
 }
 
 export default function EnhancedCheckoutForm({ onSuccess }: EnhancedCheckoutFormProps) {
-  const { user, isSignedIn } = useUser();
-  const { items: supabaseItems, getTotalPrice: getSupabaseTotalPrice, clearCart: clearSupabaseCart } = useSupabaseCart();
   const { items: localItems, subtotal: localSubtotal, clearCart: clearLocalCart } = useCart();
+
+  // Mock user state since we removed authentication
+  const user = null;
+  const isSignedIn = false;
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPesapalPayment, setShowPesapalPayment] = useState(false);

@@ -3,8 +3,6 @@
 export const dynamic = "force-dynamic";
 
 import { useCart } from "@/hooks/use-cart";
-import { useSupabaseCart } from "@/hooks/use-supabase-cart";
-import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -15,25 +13,18 @@ import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, clearCart } = useCart();
-  const {
-    items: supabaseItems,
-    removeItem: removeSupabaseItem,
-    updateQuantity: updateSupabaseQuantity,
-    getTotalPrice: getSupabaseTotalPrice,
-    clearCart: clearSupabaseCart,
-  } = useSupabaseCart();
-  const { isSignedIn } = useUser();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
 
-  // Use Supabase cart if user is authenticated, otherwise use local cart
-  const activeItems = isSignedIn ? supabaseItems : items;
-  const activeRemoveItem = isSignedIn ? removeSupabaseItem : removeItem;
-  const activeUpdateQuantity = isSignedIn
-    ? updateSupabaseQuantity
-    : updateQuantity;
-  const activeSubtotal = isSignedIn ? getSupabaseTotalPrice() : subtotal;
-  const activeClearCart = isSignedIn ? clearSupabaseCart : clearCart;
+  // Mock user state since we removed Clerk
+  const isSignedIn = false;
+
+  // Use local cart only since we removed authentication
+  const activeItems = items;
+  const activeRemoveItem = removeItem;
+  const activeUpdateQuantity = updateQuantity;
+  const activeSubtotal = subtotal;
+  const activeClearCart = clearCart;
 
   const handleCheckout = () => {
     setIsCheckingOut(true);
@@ -62,17 +53,8 @@ export default function CartPage() {
         <div className="md:col-span-2">
           <div className="space-y-4">
             {activeItems.map((item) => {
-              // Handle both local cart items and Supabase cart items
-              const itemData = isSignedIn
-                ? {
-                    id: item.product_id,
-                    name: item.product?.name,
-                    image: item.product?.image,
-                    price: item.product?.price,
-                    size: item.size,
-                    quantity: item.quantity,
-                  }
-                : item;
+              // Use local cart item data directly
+              const itemData = item;
 
               return (
                 <div
